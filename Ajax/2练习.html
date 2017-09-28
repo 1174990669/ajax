@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+<script src="jquery-1.11.1.js"></script>
+<script>
+
+$(function(){
+	var iNow = 0;
+	$('#input1').click(function(){
+		
+		$.ajax({
+			url : 'add.php',
+			type : 'POST',
+			data : {val:$('#t1').val()},
+			dataType : 'json', 
+			success : function(data){
+				var $li = $('<li>');
+				var mainId = data.mainId;
+				$li.html('<span mainId="'+ mainId +'">'+ data.text +'</span> <span class="close">X</span>');
+				$('ul').prepend( $li );
+			}
+		});
+		
+	});
+	
+	$('ul').delegate('span.close','click',function(){
+		var $elem = $(this);
+		$.ajax({
+			url : 'remove.php',
+			data : {'mainId' : $elem.attr('mainId') },
+			success : function(data){
+				$elem.parent().remove();
+			}
+		});
+		
+	});
+	
+	$('#input2').click(function(){
+		iNow++;
+		$.ajax({
+			url : 'loadPage.php?num='+iNow,
+			dataType : 'json',
+			success : function(data){
+				
+				for(var i=0;i<data.length;i++){
+					var $li = $('<li>');
+					var mainId = data[i].mainId;
+					var text = data[i].text;
+					$li.html('<span mainId="'+ mainId +'">'+text +'</span> <span class="close">X</span>');
+					
+					$('ul').append( $li );
+				}
+				
+			}
+			
+		});
+		
+	});
+	
+});
+
+</script>
+</head>
+
+<body>
+<textarea id="t1">
+</textarea>
+<input id="input1" type="button" value="发布">
+<ul>
+	<li mainId='124346346'><span>1111111111111内容</span> <span class="close">X</span></li>
+    <li mainId='124342222'><span>222222222222内容</span> <span class="close">X</span></li>
+    <li mainId='1243465555'><span>333333333333内容</span> <span class="close">X</span></li>
+</ul>
+<input id="input2" type="button" value="载入更多">
+</body>
+</html>

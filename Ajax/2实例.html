@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+#div1 div{ width:200px; height:200px; border:1px #000 solid; display:none;}
+.active{ background:red;}
+</style>
+<script src="jquery-1.11.1.js"></script>
+<script>
+
+
+$(function(){
+	
+	$('#div1').find('input').click(function(){
+		var index = $(this).index();
+		$('#div1').find('input').attr('class','');
+		$('#div1').find('div').css('display','none');
+		
+		$(this).attr('class','active');
+		
+		$('#div1').find('div').eq( index ).css('display','block');
+		
+		loadData(index,function(data){
+			$('#div1').find('div').eq(index).html(data);	
+		});
+		
+	});
+	
+	loadData(0,function(data){
+		$('#div1').find('div').eq(0).html(data);	
+	});
+	
+	function loadData(num,fn){
+		
+		$.ajax({
+			url : 'data.php?num=' + num,
+			success : function(data){
+				
+				fn(data);
+				
+			}
+		});
+		
+		
+		
+	}
+	
+});
+
+
+</script>
+</head>
+
+<body>
+<div id="div1">
+	<input class="active" type="button" value="1" />
+    <input type="button" value="2" />
+    <input type="button" value="3" />
+    <div style="display:block">正在加载...</div>
+    <div>正在加载...</div>
+    <div>正在加载...</div>
+</div>
+
+</body>
+</html>
